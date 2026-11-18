@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Occasion Reminder CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .call-reminder-list{display:grid;gap:14px;margin:17px 0 37px}.call-card{background:#fff;border:1px solid #efddd7;border-radius:13px;padding:19px}.call-card-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.call-card h4{font:600 18px 'Playfair Display';margin:0 0 5px}.call-card p{font-size:12px;color:#827b79;margin:0}.due-badge{white-space:nowrap;border-radius:20px;background:#f7e3de;color:#b45143;padding:6px 10px;font-size:11px;font-weight:700}.action-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:15px}.action-option{border:1px solid #eadfda;border-radius:7px;padding:9px 8px;font-size:12px;display:flex;gap:6px;align-items:center;color:#5f5755}.action-option input{accent-color:#d96857}.reminder-submit{border:0;border-radius:7px;background:#d96857;color:#fff;font:600 12px 'DM Sans';padding:10px 15px;margin-top:11px;cursor:pointer}.status-note{font-size:12px;color:#51796d;margin-left:10px}.empty-reminders{padding:17px;background:#fff;border:1px dashed #e8d9d3;border-radius:12px;color:#827b79;font-size:13px}@media(max-width:560px){.action-row{grid-template-columns:1fr}.call-card-head{display:block}.due-badge{display:inline-block;margin-top:10px}}
+    .call-head-actions{display:flex;gap:8px;align-items:center}.call-now{white-space:nowrap;border:1px solid #d96857;border-radius:20px;padding:6px 10px;color:#b45143;text-decoration:none;font-size:11px;font-weight:700}.call-log-row{grid-template-columns:1fr 1.2fr 1fr 1fr 1.2fr 1.2fr}.table-wrap:has(.call-log-row){overflow-x:auto}.table-wrap:has(.call-log-row) .occasion-row{min-width:760px}@media(max-width:560px){.call-head-actions{margin-top:10px}.call-now{display:inline-block}}
+    .brand-logo-frame{width:184px;height:70px;overflow:hidden;display:block}.brand-logo-image{display:block;width:200px;max-width:none;height:auto;transform:translate(-8px,-72px)}.login-brand .brand-logo-frame{width:235px;height:78px}.login-brand .brand-logo-image{width:260px;transform:translate(-12px,-95px)}
+  </style>
+</head>
+<body>
+  <section id="loginScreen" class="login-screen" aria-labelledby="loginTitle">
+    <form id="loginForm" class="login-card" novalidate>
+      <div class="login-brand"><span class="brand-logo-frame"><img class="brand-logo-image" src="assets/monignis-logo-r-adjusted.png" alt="Monignis — Shree Bhavani Sales Agency" /></span></div>
+      <p class="eyebrow">SECURE ACCESS</p>
+      <h1 id="loginTitle">Welcome back</h1>
+      <p class="login-copy">Sign in with your assigned account to open your reminder desk.</p>
+      <label>Email address<input id="loginEmail" name="email" type="email" autocomplete="username" required placeholder="name@company.com" /></label>
+      <label>Password<input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="Enter your password" /></label>
+      <p id="loginError" class="login-error" role="alert" hidden></p>
+      <button class="save-btn" type="submit">Sign in <span>→</span></button>
+      <div class="demo-accounts">
+        <strong>Demo accounts</strong>
+        <span>Admin: <code>admin@shreebhavani.local</code> / <code>Admin@123</code></span>
+        <span>Staff: <code>staff@shreebhavani.local</code> / <code>Staff@123</code></span>
+      </div>
+    </form>
+  </section>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Monignis — Shree Bhavani Sales Agency"><span class="brand-logo-frame"><img class="brand-logo-image" src="assets/monignis-logo-r-adjusted.png" alt="Monignis — Shree Bhavani Sales Agency" /></span></a>
+      <nav>
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-view="feedback"><span>✉</span> Feedback messages</button>
+        <button class="nav-item admin-only" data-view="analytics"><span>◔</span> Analytics</button>
+        <button class="nav-item" data-view="occasions"><span>◈</span> All occasions</button>
+        <button class="nav-item" data-view="customers"><span>♙</span> Customers</button>
+        <button class="nav-item" data-view="products"><span>▦</span> Products</button>
+        <button class="nav-item" data-view="callLog"><span>☏</span> Call Update Log</button>
+        <button class="nav-item admin-only" data-view="staff"><span>♧</span> Staff management</button>
+        <button class="nav-item admin-only" data-view="audit"><span>◷</span> Audit history</button>
+      </nav>
+      <div class="sidebar-note"><span>✦</span><p>Never miss a reason<br>to make someone smile.</p></div>
+    </aside>
+
+    <main>
+      <header>
+        <div><p class="eyebrow" id="todayLabel">TODAY</p><h1 id="pageTitle">Good morning, Shree Bhavani Sales Agency <span>✦</span></h1></div>
+        <div class="header-actions"><span id="currentRole" class="role-chip"></span><button id="logoutButton" class="logout-button" type="button">Sign out</button><button id="profileButton" class="profile" type="button" title="Signed-in user">SB</button></div>
+      </header>
+
+      <section id="dashboardView" class="view active">
+        <div class="welcome-card">
+          <div><p>YOUR REMINDER DESK</p><h2>Thoughtful follow-ups,<br><em>made effortless.</em></h2><span>Keep every meaningful occasion close at hand.</span></div>
+          <div class="cake-art" aria-hidden="true">🎂</div>
+        </div>
+        <div class="section-row call-reminder-heading"><div><h3>Call reminders</h3><p>Due three days before the occasion. Record the outcome of every call.</p></div></div>
+        <div id="callRemindersList" class="call-reminder-list"></div>
+        <div class="section-row update-pending-heading"><div><h3>Update pending</h3><p>Complete the call update after contacting a customer.</p></div></div>
+        <div id="updatePendingList" class="call-reminder-list"></div>
+        <div>
+          <div class="section-row"><div><h3>Coming up</h3><p>Reach out before the special day arrives.</p></div><button class="text-btn admin-only" data-view="occasions">View all →</button></div>
+          <div id="upcomingList" class="reminder-list"></div>
+          <div class="section-row history-heading admin-only"><div><h3>Recent occasions</h3><p>Your latest customer memories.</p></div></div>
+          <div id="recentList" class="recent-grid admin-only"></div>
+        </div>
+      </section>
+
+      <section id="occasionsView" class="view">
+        <div class="section-row list-title"><div><h2>All occasions</h2><p>Every order that deserves a yearly follow-up.</p></div><div class="occasion-filters"><input id="occasionSearch" class="search" placeholder="Search customer or recipient" /><input id="occasionDateSearch" class="search date-search" type="date" title="Search by occasion date" /><button id="occasionDateSearchButton" class="edit" type="button" onclick="searchOccasionsByDate()">Search date</button></div></div>
+        <div id="occasionTable" class="table-wrap"></div>
+      </section>
+
+      <section id="analyticsView" class="view">
+        <div class="section-row list-title"><div><h2>Analytics dashboard</h2><p>Business performance and follow-up results. Available to administrators only.</p></div></div>
+        <div id="analyticsCards" class="analytics-grid"></div>
+        <div class="analytics-detail-grid">
+          <article class="analytics-panel"><h3>Call outcomes</h3><div id="outcomeBreakdown" class="breakdown-list"></div></article>
+          <article class="analytics-panel"><h3>Occasions by type</h3><div id="occasionBreakdown" class="breakdown-list"></div></article>
+          <article class="analytics-panel"><h3>Order value by occasion</h3><div id="valueBreakdown" class="breakdown-list"></div></article>
+          <article class="analytics-panel"><h3>Staff call activity</h3><div id="staffActivity" class="breakdown-list"></div></article>
+        </div>
+      </section>
+
+      <section id="feedbackView" class="view">
+        <div class="section-row list-title"><div><h2>Feedback messages</h2><p>Send a review request the day after an occasion.</p></div></div>
+        <div id="feedbackList" class="feedback-list"></div>
+      </section>
+
+      <section id="customersView" class="view">
+        <div class="section-row list-title"><div><h2>Customer history</h2><p>Every occasion, grouped by the person who ordered.</p></div><input id="customerSearch" class="search" placeholder="Search customers" /></div>
+        <div id="customerCards" class="customer-grid"></div>
+      </section>
+
+      <section id="productsView" class="view">
+        <div class="section-row list-title"><div><h2>Products</h2><p>Cake names and flavours used in saved occasions.</p></div></div>
+        <div class="analytics-detail-grid"><article class="analytics-panel"><div class="product-heading"><h3>Cake names</h3><button class="edit" type="button" onclick="addProduct('cake')">Add cake name</button></div><div id="cakeProductList" class="breakdown-list"></div></article><article class="analytics-panel"><div class="product-heading"><h3>Flavours</h3><button class="edit" type="button" onclick="addProduct('flavour')">Add flavour</button></div><div id="flavourProductList" class="breakdown-list"></div></article></div>
+      </section>
+
+      <section id="callLogView" class="view">
+        <div class="section-row list-title"><div><h2>Call Update Log</h2><p>Completed call follow-ups, in one easy-to-scan record.</p></div><button id="downloadCallLog" class="call-now admin-only" type="button">Download Excel</button></div>
+        <div id="callLogTable" class="table-wrap"></div>
+      </section>
+
+      <section id="staffView" class="view">
+        <div class="section-row list-title"><div><h2>Staff management</h2><p>Add staff accounts that can access the reminder desk.</p></div></div>
+        <div class="staff-layout">
+          <form id="staffForm" class="staff-form" novalidate>
+            <p class="eyebrow">NEW STAFF MEMBER</p><h3>Add a staff account</h3>
+            <label>Full name<input required name="name" maxlength="60" placeholder="e.g. Asha Patel" /></label>
+            <label>Email address<input id="staffEmail" required name="email" type="email" autocomplete="off" placeholder="asha@company.com" /></label>
+            <label>Temporary password<input id="staffPassword" required name="password" type="password" minlength="8" pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" autocomplete="new-password" placeholder="At least 8 characters" title="Use at least 8 characters, including one uppercase letter, one number, and one special character." /><small class="password-rule">Use 8+ characters with an uppercase letter, number, and special character.</small></label>
+            <label>Role<select name="role"><option value="staff">Staff</option><option value="admin">Administrator</option></select></label>
+            <button class="save-btn" type="submit">Add staff member <span>→</span></button>
+            <p id="staffValidationError" class="validation-error" role="alert" hidden></p>
+            <p id="staffFormMessage" class="form-message" role="status" hidden></p>
+          </form>
+          <div class="staff-list-wrap"><div class="staff-list-heading"><h3>Your team</h3><span id="staffCount" class="tag"></span></div><div id="staffList" class="staff-list"></div></div>
+        </div>
+      </section>
+
+      <section id="auditView" class="view">
+        <div class="section-row list-title"><div><h2>Audit history</h2><p>A record of sign-ins and changes made in the reminder desk.</p></div></div>
+        <div id="auditList" class="audit-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <button id="addButton" class="add-button"><span>+</span> Add occasion</button>
+  <dialog id="occasionDialog">
+    <form id="occasionForm" method="dialog" novalidate>
+      <input type="hidden" name="occasionId" id="occasionId" />
+      <div class="modal-header"><div><p class="eyebrow" id="occasionDialogEyebrow">NEW MEMORY</p><h2 id="occasionDialogTitle">Add an occasion</h2></div><button type="button" class="close-btn" onclick="document.getElementById('occasionDialog').close()">×</button></div>
+      <div class="form-grid">
+        <label class="phone-field">Mobile number<input required name="phone" id="phoneInput" type="tel" inputmode="numeric" pattern="[0-9+ -]{8,15}" autocomplete="off" aria-autocomplete="list" aria-controls="phoneSuggestions" placeholder="e.g. 98765 43210" /><div id="phoneSuggestions" class="phone-suggestions" role="listbox" hidden></div></label>
+        <label>Customer name<input required name="customer" id="customerInput" placeholder="Enter name for a new number" /></label>
+        <p id="customerLookup" class="helper lookup wide">Enter a saved customer number to fetch their name.</p>
+        <label>For whom?<input required name="recipient" placeholder="e.g. Priya Shah" /></label>
+        <label>Occasion<select required name="occasion" id="occasionInput"><option value="Birthday">Birthday</option><option value="Anniversary">Anniversary</option><option value="Wedding">Wedding</option><option value="Festival">Festival</option><option value="Other">Other</option></select></label>
+        <label id="otherOccasionField" class="wide" hidden>What is the occasion?<input name="otherOccasion" id="otherOccasionInput" placeholder="e.g. Graduation, baby shower" /></label>
+        <label>Date order was placed<input required name="orderDate" type="date" /></label>
+        <label>Date of occasion<input required name="occasionDate" type="date" /></label>
+        <label>Cake name<input required name="cakeName" list="cakeSuggestions" placeholder="e.g. Celebration cake" /></label>
+        <label>Flavour<input required name="flavour" list="flavourSuggestions" placeholder="e.g. Chocolate truffle" /></label>
+        <label>Order value (₹)<input required name="orderValue" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 1200" /></label>
+        <label>Number of kgs<input required name="weightKg" type="number" min="0.25" step="0.25" inputmode="decimal" placeholder="e.g. 1.5" /></label>
+      </div>
+      <p class="helper">We’ll remind you three days before this date every year.</p>
+      <p id="occasionValidationError" class="validation-error" role="alert" hidden></p>
+      <button id="occasionSubmitButton" class="save-btn" value="default">Save occasion <span>→</span></button>
+    </form>
+  </dialog>
+  <datalist id="cakeSuggestions"></datalist>
+  <datalist id="flavourSuggestions"></datalist>
+  <script src="app.js?v=20261118-date-search"></script>
+</body>
+</html>
